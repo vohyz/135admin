@@ -53,7 +53,7 @@
             :on-preview="handlePictureCardPreview1"
             :auto-upload="false"
             :on-change="fileChange1"
-            limit="1">
+            :limit="count">
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible1">
@@ -70,7 +70,7 @@
             :on-preview="handlePictureCardPreview2"
             :auto-upload="false"
             :on-change="fileChange2"
-            limit="1">
+            :limit="count">
             <i class="el-icon-plus"></i>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible2">
@@ -119,6 +119,7 @@
     },
     data() {
       return {
+        count: 1,
         dialogTableVisible: false,
         dialogFormVisible: false,
         dialogImageUrl1: '',
@@ -168,7 +169,22 @@
           'titile': this.form.title,
           'updateTime': this.form.time
         })
-        this.$axios.post('/api/insertNews',formData)
+        this.$axios.post('/api/news/insertNews',
+        {
+          'coverName':this.form.fengmianming,
+          'imgName':this.form.zhengwenming,
+          'cover':this.file1,
+          'img':this.file2,
+          'newsEdit':{
+            'content': this.form.zhengwen,
+            'genre': this.form.radio,
+            'introduction': this.form.zhaiyao,
+            'link': '...',
+            'newsSource': this.form.resource,
+            'titile': this.form.title,
+            'updateTime': this.form.time,
+          }
+        },{headers: {'Content-Type': 'multipart/form-data'}})
           .then((response) => {
             if (response.data == '1') {
               this.$message.success({

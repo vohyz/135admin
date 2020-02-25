@@ -17,7 +17,7 @@ Vue.use(ElementUI)
 // 将axios绑定
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
-
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
