@@ -169,6 +169,7 @@
           'titile': this.form.title,
           'updateTime': this.form.time
         })
+        alert(this.form.fengmianming)
         this.$axios.post('/api/news/insertNews',
         {
           'coverName':this.form.fengmianming,
@@ -212,6 +213,47 @@
         }
     },
     mounted() {
+      this.$axios.post('/api/news/insertNews',
+      {
+        'coverName':this.form.fengmianming,
+        'imgName':this.form.zhengwenming,
+        'cover':this.file1,
+        'img':this.file2,
+        'newsEdit':{
+          'content': this.form.zhengwen,
+          'genre': this.form.radio,
+          'introduction': this.form.zhaiyao,
+          'link': '...',
+          'newsSource': this.form.resource,
+          'titile': this.form.title,
+          'updateTime': this.form.time,
+        }
+      },{headers: {'Content-Type': 'multipart/form-data'}})
+        .then((response) => {
+          if (response.data == '1') {
+            this.$message.success({
+              message: '上传成功',
+              showClose: true,
+              type: 'success'
+            })
+            this.dialogFormVisible = false
+          } else {
+            this.$message.error({
+              message: '上传失败',
+              showClose: true,
+              type: 'error'
+            })
+          }
+        },
+        (response) => {
+          this.$message.error({
+            message: '上传失败',
+            showClose: true,
+            type: 'error'
+          })
+        }
+        )
+      }
     }
   }
 </script>

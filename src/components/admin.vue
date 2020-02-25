@@ -1,59 +1,104 @@
-<template>
-        <div class="drag">
-            <div class="drag_box" v-drag></div>
-        </div>
-    </template>
+<style scoped>
+  h2 {
+    text-align: center;
+    padding: 30px;
+    font-size: 18px;
+  }
 
-    <script>
-    export default {
-        name: "game",
-        data() {
-            return {};
+  #chart_example {
+    width: 800px;
+    height: 500px;
+    margin: 0 auto;
+  }
+  .box-card {
+    padding-bottom:10px;
+  }
+</style>
+<template>
+  <div>
+    <el-dialog title="添加管理员" :visible.sync="dialogFormVisible">
+      <el-form :model="form">
+        <el-form-item label="用户名" :label-width="formLabelWidth">
+          <el-input v-model="form.account" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth">
+        <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="真实姓名" :label-width="formLabelWidth">
+        <el-input v-model="form.real_name" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="upload()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <div style="width:100%;height:40px;"><el-button style="float:left" type="success" @click="dialogFormVisible = true">添加管理员</el-button></div>
+    <div>
+    <el-card class="box-card" v-for="o in 4" :key="o">
+     <div style="float:left"></div>
+     <el-button style="float:right" type="danger" plain>删除</el-button>
+    </el-card>
+    </div>
+    <el-pagination
+        layout="prev, pager, next"
+        :total="10">
+    </el-pagination>
+  </div>
+</template>
+
+<script>
+  export default {
+    name:'admin',
+    data() {
+      return {
+        count: 1,
+        dialogTableVisible: false,
+        dialogFormVisible: false,
+        form: {
+          account: '',
+          password: '',
+          real_name: ''
         },
-        //注册局部组件指令
-        directives: {
-            drag: function(el) {
-                let dragBox = el; //获取当前元素
-                dragBox.onmousedown = e => {
-                    //算出鼠标相对元素的位置
-                    let disX = e.clientX - dragBox.offsetLeft;
-                    let disY = e.clientY - dragBox.offsetTop;
-                    document.onmousemove = e => {
-                        //用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
-                        let left = e.clientX - disX;
-                        let top = e.clientY - disY;
-                        //移动当前元素
-                        dragBox.style.left = left + "px";
-                        dragBox.style.top = top + "px";
-                    };
-                    document.onmouseup = e => {
-                          //鼠标弹起来的时候不再移动
-                          document.onmousemove = null;
-                         //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
-                        document.onmouseup = null;
-                    };
-                };
+        formLabelWidth: '120px'
+      }
+    },
+    methods: {
+      upload () {
+        this.$axios.post('/api/admin/insertAdmin',
+        {
+          'account': this.form.account,
+          'password': this.form.password,
+          'real_name': this.form.real_name
+          }
+        )
+          .then((response) => {
+            if (response.data == '1') {
+              this.$message.success({
+                message: '上传成功',
+                showClose: true,
+                type: 'success'
+              })
+              this.dialogFormVisible = false
+            } else {
+              this.$message.error({
+                message: '上传失败',
+                showClose: true,
+                type: 'error'
+              })
             }
+          },
+          (response) => {
+            this.$message.error({
+              message: '上传失败',
+              showClose: true,
+              type: 'error'
+            })
+          }
+          )
         }
-    };
-    </script>
-    <style scoped>
-    .drag {
-        width: 100%;
-        height: 500px;
-        background-color: #fff;
+    },
+    mounted() {
     }
-    .drag_box {
-        width: 150px;
-        height: 90px;
-        border: 1px solid #666;
-        background-color: #ccc;
-        /* 使用定位，脱离文档流 */
-        position: relative;
-        top: 100px;
-        left: 100px;
-        /* 鼠标移入变成拖拽手势 */
-        cursor: move;
-        z-index: 3000;
-    }
-    </style>
+  }
+</script>
