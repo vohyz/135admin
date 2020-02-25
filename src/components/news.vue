@@ -112,6 +112,7 @@
 </template>
 
 <script>
+  import qs from 'qs'
   import pic from './picUpload.vue'
   export default {
     components: {
@@ -155,22 +156,7 @@
         this.file2 = file.raw;
       },
       upload () {
-        const formData = new FormData();
-        formData.append('coverName',this.form.fengmianming)
-        formData.append('imgName',this.form.zhengwenming)
-        formData.append('cover',this.file1)
-        formData.append('img',this.file2)
-        formData.append('newsEdit',{
-          'content': this.form.zhengwen,
-          'genre': this.form.radio,
-          'introduction': this.form.zhaiyao,
-          'link': '...',
-          'newsSource': this.form.resource,
-          'titile': this.form.title,
-          'updateTime': this.form.time
-        })
-        alert(this.form.fengmianming)
-        this.$axios.post('/api/news/insertNews',
+        this.$axios.post('/api/news/insertNews',qs .stringify(
         {
           'coverName':this.form.fengmianming,
           'imgName':this.form.zhengwenming,
@@ -185,7 +171,7 @@
             'titile': this.form.title,
             'updateTime': this.form.time,
           }
-        },{headers: {'Content-Type': 'multipart/form-data'}})
+        }),{headers: {'Content-Type': 'multipart/form-data'}})
           .then((response) => {
             if (response.data == '1') {
               this.$message.success({
@@ -213,7 +199,27 @@
         }
     },
     mounted() {
-      
+      this.$axios.post('/api/news/newsList',
+      {
+        'range': {
+          'startFrom': 0,
+          'limitation': 12
+        }
+      })
+        .then((response) => {
+          for(let i=0;i<response.data.length();i++){
+
+          }
+        },
+        (response) => {
+          this.$message.error({
+            message: '上传失败',
+            showClose: true,
+            type: 'error'
+          })
+        }
+        )
+
     }
   }
 </script>
