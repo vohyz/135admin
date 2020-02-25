@@ -98,9 +98,10 @@
     </el-dialog>
     <div style="width:100%;height:40px;"><el-button style="float:left" type="success" @click="dialogFormVisible = true">添加新闻</el-button></div>
     <div>
-    <el-card class="box-card" v-for="o in 4" :key="o">
-     <div style="float:left"></div>
-     <el-button style="float:right" type="danger" plain>删除</el-button>
+    <el-card class="box-card" v-for="o in this.newsdata" :key="o.newsId">
+     <div style="float:left;margin-right:20px">{{o.title}}</div>
+     <div style="float:left">{{o.introduction}}</div>
+     <el-button style="float:right" type="danger" @click="deleteNews(o.newsId)" plain>删除</el-button>
      <el-button style="float:right" type="primary" plain>详情</el-button>
     </el-card>
     </div>
@@ -120,7 +121,10 @@
     },
     data() {
       return {
+        newsdata: [],
         count: 1,
+        startFrom: 1,
+        limitation: 3,
         dialogTableVisible: false,
         dialogFormVisible: false,
         dialogImageUrl1: '',
@@ -155,23 +159,24 @@
       fileChange2(file) {
         this.file2 = file.raw;
       },
+      deleteNews (id) {
+        this.$axios.post('/api/news/deleteNews/${id}')
+      },
       upload () {
-        this.$axios.post('/api/news/insertNews',qs .stringify(
-        {
-          'coverName':this.form.fengmianming,
-          'imgName':this.form.zhengwenming,
-          'cover':this.file1,
-          'img':this.file2,
-          'newsEdit':{
-            'content': this.form.zhengwen,
-            'genre': this.form.radio,
-            'introduction': this.form.zhaiyao,
-            'link': '...',
-            'newsSource': this.form.resource,
-            'titile': this.form.title,
-            'updateTime': this.form.time,
-          }
-        }),{headers: {'Content-Type': 'multipart/form-data;boundary=-----------------------------264141203718551'}})
+        let form = new FormData();
+        form.append('coverName',this.form.fengmianming);
+        form.append('imgName',this.form.zhengwenming);
+        form.append('cover',this.file1);
+        form.append('img',this.file2);
+        form.append('content', this.form.zhengwen);
+        form.append('genre', this.form.radio);
+        form.append('introduction', this.form.zhaiyao);
+        form.append('link', '...');
+        form.append('newsSource', this.form.resource);
+        form.append('titile', this.form.title);
+        form.append('updateTime', this.form.time);
+        console.log(form.get('img'))
+        this.$axios.post('/api/news/insertNews',form,{headers: {'Content-Type': 'multipart/form-data;boundary=-----------------------------264141203718551'}})
           .then((response) => {
             if (response.data == '1') {
               this.$message.success({
@@ -201,19 +206,16 @@
     mounted() {
       this.$axios.post('/api/news/newsList',
       {
-        'range': {
-          'startFrom': 0,
-          'limitation': 12
-        }
+          'startFrom': this.startFrom,
+          'limitation': this.limitation
       })
         .then((response) => {
-          for(let i=0;i<response.data.length();i++){
-            
-          }
+          this.newsdata = response.data
+          console.log(response.data)
         },
         (response) => {
           this.$message.error({
-            message: '上传失败',
+            message: '获取失败',
             showClose: true,
             type: 'error'
           })
