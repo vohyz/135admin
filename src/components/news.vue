@@ -185,7 +185,7 @@
             'titile': this.form.title,
             'updateTime': this.form.time,
           }
-        })
+        },{headers: {'Content-Type': 'multipart/form-data'}})
           .then((response) => {
             if (response.data == '1') {
               this.$message.success({
@@ -214,7 +214,6 @@
     },
     mounted() {
       
-
     }
   }
 </script>
