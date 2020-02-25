@@ -49,10 +49,10 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$axios.post('/api/login/in',
+          this.$axios.post('/api/admin/signIn',
             {
-              'logn': this.ruleForm.name,
-              'pswd': this.ruleForm.pass
+              'account': this.ruleForm.name,
+              'password': this.ruleForm.pass
             }
           )
             .then((response) => {
@@ -60,8 +60,6 @@ export default {
                 // 设置Vuex登录标志为true，默认userLogin为false
                 this.$store.dispatch('userLogin', true)
                 localStorage.setItem('Flag', 'isLogin')
-                localStorage.setItem('User', response.data.sno)
-                localStorage.setItem('UserName', response.data.sname)
                 this.$message.success({
                   message: '登录成功',
                   showClose: true,

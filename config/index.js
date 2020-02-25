@@ -14,18 +14,12 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://127.0.0.1:9000',
+        target: 'http://127.0.0.1:7878',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': 'http://127.0.0.1:9000'
+          '^/api': 'http://127.0.0.1:7878'
         }
-        },
-      '/sock': {
-        target: 'ws://localhost:8080',
-        changeOrigin: true,
-        pathRewrite: {
-        '^/sock': 'ws://localhost:8080'
-        }
+        }
       }
     },
 
