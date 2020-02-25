@@ -171,7 +171,7 @@
             'titile': this.form.title,
             'updateTime': this.form.time,
           }
-        }),{headers: {'Content-Type': 'multipart/form-data'}})
+        }),{headers: {'Content-Type': 'multipart/form-data;boundary=-----------------------------264141203718551'}})
           .then((response) => {
             if (response.data == '1') {
               this.$message.success({
@@ -208,7 +208,7 @@
       })
         .then((response) => {
           for(let i=0;i<response.data.length();i++){
-
+            
           }
         },
         (response) => {
