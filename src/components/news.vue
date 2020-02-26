@@ -173,7 +173,7 @@
         form.append('introduction', this.form.zhaiyao);
         form.append('link', '...');
         form.append('newsSource', this.form.resource);
-        form.append('titile', this.form.title);
+        form.append('title', this.form.title);
         form.append('updateTime', this.form.time);
         console.log(form.get('img'))
         this.$axios.post('/api/news/insertNews',form,{headers: {'Content-Type': 'multipart/form-data;boundary=-----------------------------264141203718551'}})
