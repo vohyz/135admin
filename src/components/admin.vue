@@ -33,17 +33,33 @@
         <el-button type="primary" @click="upload()">确 定</el-button>
       </div>
     </el-dialog>
-    <div style="width:100%;height:40px;"><el-button style="float:left" type="success" @click="dialogFormVisible = true">添加管理员</el-button></div>
-    <div>
-    <el-card class="box-card" v-for="o in 4" :key="o">
-     <div style="float:left"></div>
-     <el-button style="float:right" type="danger" plain>删除</el-button>
-    </el-card>
+    <el-dialog title="注销" :visible.sync="dialogFormVisible1">
+      <el-form :model="form">
+        <el-form-item label="用户名" :label-width="formLabelWidth">
+          <el-input v-model="form.account" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth">
+        <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="真实姓名" :label-width="formLabelWidth">
+        <el-input v-model="form.real_name" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible1 = false">取 消</el-button>
+        <el-button type="primary" @click="delete1()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <div style="width:100%;height:40px;">
+      <el-button style="float:center" type="success" @click="dialogFormVisible = true">
+        添加管理员
+        </el-button>
+      </div>
+    <div style="width:100%;height:40px;margin-top:50px;">
+      <el-button style="float:center" type="warning" @click="zhuxiao()">
+        注销管理员(现在登录的管理员)
+      </el-button>
     </div>
-    <el-pagination
-        layout="prev, pager, next"
-        :total="10">
-    </el-pagination>
   </div>
 </template>
 
@@ -55,6 +71,7 @@
         count: 1,
         dialogTableVisible: false,
         dialogFormVisible: false,
+        dialogFormVisible1 : false,
         form: {
           account: '',
           password: '',
@@ -64,6 +81,14 @@
       }
     },
     methods: {
+      zhuxiao () {
+        this.dialogFormVisible1 = true
+      },
+      delete1 () {
+        var id = this.form.account
+        this.$axios.post(`/api/admin/deleteAdmin/${id}`)
+        this.$parent.logout()
+      },
       upload () {
         this.$axios.post('/api/admin/insertAdmin',
         {

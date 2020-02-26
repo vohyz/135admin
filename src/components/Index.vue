@@ -128,6 +128,6 @@ export default {
   }
   .content {
     float: left;
-    width: 800px;
+    width: 1000px;
   }
 </style>
